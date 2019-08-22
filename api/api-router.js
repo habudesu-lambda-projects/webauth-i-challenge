@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs')
 
 const router = express.Router()
 
-router.get('/users', async (req, res) => {
+router.get('/users', authenticate, async (req, res) => {
     const users = await Users.getUsers()
     res.status(200).json(users)
 })
@@ -44,7 +44,7 @@ async function authenticate( req, res, next ) {
     const {username, password} = req.headers
     if(username && password) {
         try {
-            await Users.getUserByUsername(username)
+            const user = await Users.getUserByUsername(username)
             if(user && bcrypt.compareSync(password, user.password)) {
                 next()
             } else {
