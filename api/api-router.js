@@ -28,6 +28,7 @@ router.post('/login', async (req, res) => {
     try {
         const user = await Users.getUserByUsername(username)
         if(user && bcrypt.compareSync(password, user.password)) {
+            req.session.userId = user.id
             res.status(200).json({ message: "Logged in"})
         } else {
             res.status(400).json({ message: "You shall not pass!"})
